@@ -39,7 +39,7 @@ Há três formas de lidar com banco de dados dentro de uma aplicação no backen
 
 ### Configurando TypeORM
 
-```json
+```js
 // raiz do projeto
 {
   "type": "sqlite",
@@ -134,6 +134,10 @@ export class createOrphanages1602670854718 implements MigrationInterface {
           type: 'text'
         },
         {
+          name: 'opening_hours',
+          type: 'varchar',
+        },
+        {
           name: 'open_on_weekends',
           type: 'boolean',
           default: false
@@ -153,4 +157,10 @@ export class createOrphanages1602670854718 implements MigrationInterface {
 
 ```bash
  yarn typeorm migration:run
+```
+
+### Comando para reverter migrations
+
+```bash
+ yarn typeorm migration:revert
 ```
