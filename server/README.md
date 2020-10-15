@@ -24,6 +24,8 @@
   * ```--transpile-only```: O Typescript só irá transpilar o código, e não mostrar os erros no terminal (O VSCode já faz isso)
   * ```--ignore-watch```: Ignora uma determinada pasta
 
+---
+
 ## Configurando Banco de Dados
 
 Há três formas de lidar com banco de dados dentro de uma aplicação no backend
@@ -73,6 +75,8 @@ const app = express()
 
 app.use(express.json())
 ```
+
+---
 
 ## Migrations
 
@@ -153,6 +157,52 @@ export class createOrphanages1602670854718 implements MigrationInterface {
 
 ```
 
+* create_images
+
+```ts
+import { MigrationInterface, QueryRunner, Table } from 'typeorm';
+
+export class createImages1602754209772 implements MigrationInterface {
+  public async up(queryRunner: QueryRunner): Promise<void> {
+    await queryRunner.createTable(new Table({
+      name: 'images',
+      columns: [
+        {
+          name: 'id',
+          type: 'integer',
+          unsigned: true, // Não pode ser negativo
+          isPrimary: true, // Indicará que é a primaryKey
+          isGenerated: true, // Será gerada automaticamente
+          generationStrategy: 'increment', // Será gerada utilizando uma lógica incremental
+        },
+        {
+          name: 'path',
+          type: 'varchar',
+        },
+        {
+          name: 'orphanage_id',
+          type: 'integer',
+        },
+      ],
+      foreignKeys: [
+        {
+          name: 'ImageOrphanage',
+          columnNames: ['orphanage_id'],
+          referencedTableName: 'orphanages',
+          referencedColumnNames: ['id'],
+          onUpdate: 'CASCADE', // Se o id de orfanato for mudado, então é mudado aqui também
+          onDelete: 'CASCADE', // Caso o orfanato seja deletado, então as imagens também serão
+        },
+      ],
+    }));
+  }
+
+  public async down(queryRunner: QueryRunner): Promise<void> {
+    await queryRunner.dropTable('images');
+  }
+}
+```
+
 ### Comando para executar migrations
 
 ```bash
@@ -163,4 +213,223 @@ export class createOrphanages1602670854718 implements MigrationInterface {
 
 ```bash
  yarn typeorm migration:revert
+```
+
+---
+
+## Upload de imagens
+
+Instalar a biblioteca ```multer```
+
+```bash
+yarn add multer
+yarn add @types/multer -D
+```
+
+Configurar o multer
+
+```ts
+// src/config/upload.ts
+import multer from 'multer';
+import path from 'path';
+
+export default {
+  storage: multer.diskStorage({
+    destination: path.join(__dirname, '..', '..', 'uploads'),
+    filename: (request, file, cb) => {
+      const fileName = `${Date.now()}-${file.originalname}`;
+
+      cb(null, fileName);
+    },
+  }),
+};
+
+```
+
+```ts
+// src/routes
+import multer from 'multer';
+import uploadConfig from './config/upload';
+
+const upload = multer(uploadConfig);
+
+routes.post('/orphanages', upload.array('images'), OrphanageController.create);
+```
+
+---
+
+## Trabalhando com Views
+
+As Views vão determinar como os dados ficarão disponíveis para o meu Frontend
+
+* OrphanageView
+
+```ts
+// src/views/OrphanageView
+
+import Orphanage from '../models/Orphanage';
+import ImageView from './ImageView';
+
+class OrphanageView {
+  render(orphanage: Orphanage) {
+    return {
+      id: orphanage.id,
+      name: orphanage.name,
+      latitude: orphanage.latitude,
+      longitude: orphanage.longitude,
+      about: orphanage.about,
+      instructions: orphanage.instructions,
+      opening_hours: orphanage.opening_hours,
+      open_on_weekends: orphanage.open_on_weekends,
+      images: ImageView.renderMany(orphanage.images),
+    };
+  }
+
+  renderMany(orphanages: Orphanage[]) {
+    return orphanages.map((orphanage) => this.render(orphanage));
+  }
+}
+
+export default new OrphanageView();
+```
+
+* ImageView
+
+```ts
+import Image from '../models/Image';
+
+class ImageView {
+  render(image: Image) {
+    return {
+      id: image.id,
+      url: `http://localhost:3333/uploads/${image.path}`,
+    };
+  }
+
+  renderMany(images: Image[]) {
+    return images.map((image) => this.render(image));
+  }
+}
+
+export default new ImageView();
+
+```
+
+Nos OrphanageController, fazer:
+
+```ts
+// método index()
+return response.json(OrphanageView.renderMany(orphanages));
+```
+
+```ts
+// método show()
+return response.json(OrphanageView.render(orphanage));
+```
+
+---
+
+## Lidando com exceções
+
+* Instalar ```express-async-errors```
+
+```bash
+yarn add express-async-errors
+```
+
+```ts
+// src/errors/handler.ts
+
+import { ErrorRequestHandler } from 'express';
+
+const errorHandler: ErrorRequestHandler = (error, request, response, next) => {
+  console.error(error);
+
+  return response.status(500).json({ message: 'Internal server error' });
+};
+
+export default errorHandler;
+
+```
+
+```ts
+// srv/server.ts
+import 'express-async-errors';
+import errorHandler from './errors/handler';
+app.use(errorHandler);
+```
+
+---
+
+## Validação dos dados
+
+```ts
+// método create() do OrphanagesController()
+
+const schema = Yup.object().shape({
+  name: Yup.string().required(),
+  latitude: Yup.number().required(),
+  longitude: Yup.number().required(),
+  about: Yup.string().required().max(300),
+  instructions: Yup.string().required(),
+  opening_hours: Yup.string().required(),
+  open_on_weekends: Yup.string().required(),
+  images: Yup.array(Yup.object().shape({
+    path: Yup.string().required(),
+  })),
+});
+
+await schema.validate(data, {
+  abortEarly: false, // Ele retorna todos os erros ao mesmo tempo, e não um de cada vez
+});
+```
+
+```ts
+// src/errors/handler.ts
+
+import { ErrorRequestHandler } from 'express';
+import { ValidationError } from 'yup';
+
+interface ValidationErrors {
+  [key: string]: string[]
+}
+
+const errorHandler: ErrorRequestHandler = (error, request, response, next) => {
+  if (error instanceof ValidationError) {
+    const errors: ValidationErrors = {};
+
+    error.inner.forEach((err) => {
+      errors[err.path] = err.errors;
+    });
+
+    return response.status(400).json({ message: 'Validation fails', errors });
+  }
+
+  console.error(error);
+
+  return response.status(500).json({ message: 'Internal server error' });
+};
+
+export default errorHandler;
+
+```
+
+---
+
+## Adicionando CORS
+
+O CORS define quais endereços externos vão ter acesso a nossa aplicação.
+
+Instalar o módulo de cors
+
+```bash
+yarn add cors
+yarn add @types/cors -D
+```
+
+Adicionar no server.ts
+
+```ts
+import cors from 'cors'
+app.use(cors())
 ```

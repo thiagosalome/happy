@@ -1,4 +1,7 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Entity, Column, PrimaryGeneratedColumn, OneToMany, JoinColumn,
+} from 'typeorm';
+import Image from './Image';
 
 @Entity('orphanages')
 export default class Orphanage {
@@ -25,4 +28,11 @@ export default class Orphanage {
 
   @Column()
   open_on_weekends: boolean
+
+  // Como não existe no banco de dados, eu não coloco o @Column()
+  @OneToMany(() => Image, (image) => image.orphanage, {
+    cascade: ['insert', 'update'], // Quando cadastrar/atualizar um orfanato, ele vai automaticamete cadastrar/atualizar as imagens
+  })
+  @JoinColumn({ name: 'orphanage_id' }) // O nome da coluna na entidade Images que relaciona com Orphanage
+  images: Image[]
 }
