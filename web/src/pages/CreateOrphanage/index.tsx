@@ -47,7 +47,13 @@ export default function CreateOrphanage() {
               />
 
               {
-                position.latitude !== 0 && <Marker interactive={false} icon={mapIcon} position={[position.latitude, position.longitude]} />
+                position.latitude !== 0 && (
+                  <Marker
+                    interactive={false}
+                    icon={mapIcon}
+                    position={[position.latitude, position.longitude]}
+                  />
+                )
               }
             </Map>
 

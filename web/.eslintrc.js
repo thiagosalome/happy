@@ -24,5 +24,10 @@ module.exports = {
     '@typescript-eslint',
   ],
   rules: {
+    'react/jsx-filename-extension': 'off',
+    'jsx-a11y/label-has-associated-control': 'off',
+    'import/no-unresolved': 'off',
+    'import/extensions': 'off',
+    'no-use-before-define': 'off',
   },
 };
