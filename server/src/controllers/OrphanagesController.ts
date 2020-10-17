@@ -36,7 +36,14 @@ class OrphanagesController {
     }));
 
     const data = {
-      name, latitude, longitude, about, instructions, opening_hours, open_on_weekends, images,
+      name,
+      latitude,
+      longitude,
+      about,
+      instructions,
+      opening_hours,
+      open_on_weekends: open_on_weekends === 'true',
+      images,
     };
 
     const schema = Yup.object().shape({
