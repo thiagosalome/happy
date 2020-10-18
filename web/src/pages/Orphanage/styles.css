@@ -172,3 +172,44 @@
 .orphanage-details .orphanage-details-content button.contact-button:hover {
   background: #36CF82;
 }
+
+@media screen and (max-width: 767px) {
+  .orphanage-details {
+    width: auto;
+    margin: 0;
+  }
+
+  .orphanage-details .images {
+    grid-template-columns: repeat(3 ,1fr);
+    grid-column-gap: 10px;
+    column-gap: 10px;
+    margin: 16px 20px 0;
+  }
+
+  .orphanage-details .orphanage-details-content {
+    padding: 40px 20px;
+  }
+
+  .orphanage-details .orphanage-details-content h1 {
+    font-size: 30px;
+    line-height: 1.2;
+  }
+
+  .orphanage-details .orphanage-details-content p {
+    margin-top: 15px;
+    line-height: 1.2;
+  }
+
+  .orphanage-details .orphanage-details-content .map-container {
+    margin-top: 40px;
+  }
+
+  .orphanage-details .orphanage-details-content hr {
+    margin: 40px 0;
+  }
+
+  .orphanage-details .orphanage-details-content h2 {
+    font-size: 24px;
+    line-height: 1.2;
+  }
+}

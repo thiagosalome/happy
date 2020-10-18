@@ -205,7 +205,15 @@ form.create-orphanage-form button.confirm-button:hover {
     max-width: 100%;
   }
 
+  form.create-orphanage-form fieldset + fieldset {
+    margin-top: 40px;
+  }
+
   form.create-orphanage-form fieldset legend {
+    font-size: 24px;
+  }
+  
+  form.create-orphanage-form fieldset:first-child legend {
     padding: 10px 0 20px 60px;
   }
 
