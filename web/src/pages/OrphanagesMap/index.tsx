@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { FiPlus, FiArrowRight } from 'react-icons/fi';
+import { IoMdMenu } from 'react-icons/io';
 import {
   Map, TileLayer, Marker, Popup,
 } from 'react-leaflet';
@@ -26,6 +27,7 @@ interface Orphanage {
 
 const OrphanagesMap: React.FC = () => {
   const [orphanages, setOrphanages] = useState<Orphanage[]>([]);
+  const [showSidebar, setShowSidebar] = useState(false);
 
   useEffect(() => {
     async function getOrphanages() {
@@ -36,9 +38,16 @@ const OrphanagesMap: React.FC = () => {
     getOrphanages();
   }, []);
 
+  function toggleSidebar() {
+    setShowSidebar(!showSidebar);
+  }
+
   return (
     <div id="page-map">
-      <aside>
+      <button onClick={toggleSidebar} type="button" className="app-sidebar-button">
+        <IoMdMenu size={30} color="#17D6EB" />
+      </button>
+      <aside className={`${showSidebar ? 'active' : ''}`}>
         <header>
           <img src={mapMarkerImg} alt="Happy" title="Happy" />
           <h2>Escolha um orfanato no mapa</h2>

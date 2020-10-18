@@ -1,4 +1,5 @@
 import React from 'react';
+import { IoMdMenu } from 'react-icons/io';
 import { FiArrowLeft } from 'react-icons/fi';
 import { useHistory } from 'react-router-dom';
 
@@ -10,15 +11,20 @@ const Sidebar: React.FC = () => {
   const { goBack } = useHistory();
 
   return (
-    <aside className="app-sidebar">
-      <img src={mapMarkerImg} alt="Happy" />
+    <>
+      <button type="button" className="app-sidebar-button">
+        <IoMdMenu size={30} color="#17D6EB" />
+      </button>
+      <aside className="app-sidebar">
+        <img src={mapMarkerImg} alt="Happy" />
 
-      <footer>
-        <button type="button" onClick={goBack}>
-          <FiArrowLeft size={24} color="#FFF" />
-        </button>
-      </footer>
-    </aside>
+        <footer>
+          <button type="button" onClick={goBack}>
+            <FiArrowLeft size={24} color="#FFF" />
+          </button>
+        </footer>
+      </aside>
+    </>
 
   );
 };

@@ -94,3 +94,58 @@
 #page-map .map-popup .leaflet-popup-tip-container {
   display: none;
 }
+
+#page-map .app-sidebar-button {
+  position: absolute;
+  border: none;
+  box-shadow: 0 0 11px rgba(0,0,0,0.2);
+  background-color: #ffffff;
+  align-items: center;
+  justify-content: center;
+  height: 50px;
+  width: 50px;
+  border-radius: 20px;
+  cursor: pointer;
+  display: none;
+}
+
+@media screen and (max-width: 1024px) {
+  #page-map aside {
+    padding: 50px;
+  }
+}
+
+@media screen and (max-width: 767px) {
+  #page-map aside {
+    position: fixed;
+    transition:  all 0.3s ease-in-out;
+    z-index: 10;
+    width: auto;
+    max-width: 200px;
+    padding: 20px;
+    min-height: 100vh;
+    left: -100%;
+  }
+  #page-map aside.active {
+    left: 0;
+  }
+  #page-map .app-sidebar-button {
+    display: flex;
+    z-index: 10;
+    bottom: 100px;
+    right: 15px;
+  }
+  #page-map aside h2 {
+    font-size: 24px;
+    line-height: 1.2;
+  }
+  #page-map aside p {
+    font-size: 16px;
+    line-height: 1.2;
+  }
+  #page-map .create-orphanage {
+    height: 50px;
+    width: 50px;
+    right: 15px;
+  }
+}

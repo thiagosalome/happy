@@ -100,12 +100,6 @@
   }
 }
 
-@media screen and (max-width: 991px) {
-  #page-landing .content-wrapper {
-
-  }
-}
-
 @media screen and (max-width: 767px) {
   #page-landing .content-wrapper {
     background-size: 200px;
