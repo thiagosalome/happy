@@ -1,5 +1,5 @@
 /* eslint-disable camelcase */
-import React, { useState, ChangeEvent } from 'react';
+import React, { useState, useEffect, ChangeEvent } from 'react';
 import { Map, Marker, TileLayer } from 'react-leaflet';
 import { LeafletMouseEvent } from 'leaflet';
 import { useForm } from 'react-hook-form';
@@ -83,6 +83,14 @@ export default function CreateOrphanage() {
     history.push('/app');
   }
 
+  useEffect(() => {
+    navigator.geolocation.getCurrentPosition((currentPosition) => {
+      const { latitude, longitude } = currentPosition.coords;
+
+      setPosition({ latitude, longitude });
+    });
+  }, []);
+
   return (
     <div id="page-create-orphanage">
       <Sidebar />
@@ -92,9 +100,9 @@ export default function CreateOrphanage() {
             <legend>Dados</legend>
 
             <Map
-              center={[-19.9914736, -43.9650054]}
+              center={[position.latitude, position.longitude]}
               style={{ width: '100%', height: 280 }}
-              zoom={15}
+              zoom={(position.latitude === 0 && position.longitude === 0) ? 2 : 15}
               onclick={handleMapClick}
             >
               <TileLayer
