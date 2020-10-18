@@ -1,7 +1,9 @@
+/* eslint-disable jsx-a11y/control-has-associated-label */
 /* eslint-disable camelcase */
 import React, { useState, useEffect, ChangeEvent } from 'react';
 import { Map, Marker, TileLayer } from 'react-leaflet';
 import { LeafletMouseEvent } from 'leaflet';
+import { IoMdClose } from 'react-icons/io';
 import { useForm } from 'react-hook-form';
 import { FiPlus } from 'react-icons/fi';
 import { useHistory } from 'react-router-dom';
@@ -59,6 +61,14 @@ export default function CreateOrphanage() {
       ...previewImages,
       ...selectedImagesPreview,
     ]);
+  }
+
+  function handleRemoveImages(image: string, fileImage: File) {
+    const filteredPreviewImage = previewImages.filter(((preview) => preview !== image));
+    setPreviewImages(filteredPreviewImage);
+
+    const filteredFileImage = images.filter((file) => (file.name !== fileImage.name));
+    setImages(filteredFileImage);
   }
 
   async function sendForm(data: FormValues) {
@@ -151,7 +161,10 @@ export default function CreateOrphanage() {
               <div className="images-container">
                 {
                   previewImages.map((image, index) => (
-                    <img key={image} src={image} alt={`Imagem ${index}`} title={`Imagem ${index}`} />
+                    <div key={image}>
+                      <button type="button" onClick={() => handleRemoveImages(image, images[index])}><IoMdClose size={20} color="#FF669D" /></button>
+                      <img src={image} alt={`Imagem ${index}`} title={`Imagem ${index}`} />
+                    </div>
                   ))
                 }
                 <label htmlFor="images" className="new-image">
