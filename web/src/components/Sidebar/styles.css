@@ -38,20 +38,30 @@ aside.app-sidebar footer button:hover {
   background: #17D6EB;
 }
 
-/* .app-sidebar-button {
+.app-back-button {
   position: absolute;
-  top: 30px;
   left: 20px;
   border: none;
-  box-shadow: 0 0 11px rgba(0,0,0,0.2);
+  box-shadow: 0 0 5px rgba(0,0,0,0.2);
   background-color: #ffffff;
-  display: flex;
+  display: none;
   align-items: center;
   justify-content: center;
+  border-radius: 20px;
+  cursor: pointer;
   height: 50px;
   width: 50px;
-  border-radius: 50px;
-  cursor: pointer;
-  display: none;
-} */
+  top: 20px;
+}
+
+@media screen and (max-width: 767px) {
+  aside.app-sidebar {
+    display: none;
+  }
+
+  .app-back-button {
+    display: flex;
+  }
+}
+
 

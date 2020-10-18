@@ -195,3 +195,22 @@ form.create-orphanage-form button.confirm-button svg {
 form.create-orphanage-form button.confirm-button:hover {
   background: #36CF82;
 }
+
+@media screen and (max-width: 767px) {
+  form.create-orphanage-form {
+    margin: 0;
+    padding: 20px;
+    border-radius: 0;
+    width: auto;
+    max-width: 100%;
+  }
+
+  form.create-orphanage-form fieldset legend {
+    padding: 10px 0 20px 60px;
+  }
+
+  form.create-orphanage-form .input-block .images-container {
+    grid-template-columns: repeat(3, 1fr);
+    grid-gap: 10px;
+  }
+}
